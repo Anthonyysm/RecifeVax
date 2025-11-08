@@ -33,7 +33,61 @@ Este projeto foi desenvolvido e testado em um ambiente com as seguintes dependê
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/RecifeVax.git
+git clone https://github.com/Anthonyysm/RecifeVax.git
 cd RecifeVax
+```
 
 ### 2. Crie e ative um ambiente virtual
+
+Caso você não tenha o virtualenv instalado, você pode instalá-lo com:
+```bash
+pip install virtualenv
+```
+
+Crie e ative o ambiente:
+- No Windows:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+- No Linux/Mac:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Execute o Dashboard
+
+```bash
+streamlit run app.py
+```
+
+Após executar o comando, o Streamlit abrirá automaticamente o dashboard no navegador padrão, geralmente em `http://localhost:8501`.
+
+## Estrutura do Projeto
+
+```
+RecifeVax/
+│
+├── app.py                      # Arquivo principal do Streamlit
+├── data/                       # Pasta contendo o dataset de vacinação
+│   └── vacinacao_recife.csv
+├── content/                     # Pasta onde o arquivo HTML do notebook será gerado
+│   └── previsao_vacinacao.pkl
+├── notebooks/                  # Jupyter Notebook usado para análise exploratória
+├── requirements.txt            # Lista de dependências
+└── README.md                   # Documentação do projeto
+```
+
+## Melhorias Futuras
+
+- Integração com APIs de dados em tempo real (ex: OpenDataSUS)
+- Implementação de filtros personalizados por bairro e faixa etária
+- Adição de relatórios automáticos em PDF
+- Criação de alertas automáticos de tendência de vacinação

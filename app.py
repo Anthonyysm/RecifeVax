@@ -343,3 +343,42 @@ top_vacina = df['vacina'].value_counts().idxmax()
 st.info(
     f'💡 Insight: a vacina mais aplicada foi **{top_vacina}**, com destaque entre os clusters detectados.'
 )
+# -------------------------------
+# 💬 Chat interativo
+# -------------------------------
+st.header("💬 Chat com o RecifeVax")
+
+st.write("Converse com o painel! Pergunte sobre vacinas, grupos ou totais de vacinação.")
+
+user_input = st.chat_input("Digite sua pergunta...")
+
+
+def responder_pergunta(pergunta, df):
+    pergunta = pergunta.lower()
+
+    if "vacina" in pergunta and "mais aplicada" in pergunta:
+        vacina_top = df['vacina'].value_counts().idxmax()
+        total = df['vacina'].value_counts().max()
+        return f"A vacina mais aplicada foi **{vacina_top}**, com **{total:,} doses**."
+
+    elif "total" in pergunta and ("dose" in pergunta or "vacinad" in pergunta):
+        total = len(df)
+        return f"O total de doses aplicadas é **{total:,}**."
+
+    elif "sexo" in pergunta:
+        counts = df['sexo'].value_counts()
+        return f"**{counts.index[0]}**: {counts.iloc[0]:,} doses | **{counts.index[1]}**: {counts.iloc[1]:,} doses."
+
+    elif "grupo" in pergunta:
+        grupo_top = df['grupo'].value_counts().idxmax()
+        total = df['grupo'].value_counts().max()
+        return f"O grupo com mais vacinados foi **{grupo_top}**, com **{total:,} pessoas**."
+
+    else:
+        return "Desculpe, ainda não entendo essa pergunta. Tente algo como: 'qual vacina mais aplicada?' ou 'total de doses aplicadas'."
+
+
+if user_input:
+    st.chat_message("user").write(user_input)
+    resposta = responder_pergunta(user_input, df)
+    st.chat_message("assistant").write(resposta)

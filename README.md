@@ -1,93 +1,86 @@
-# RecifeVax Dashboard - Análise de Vacinação COVID-19 em Recife
+# 💉 RecifeVax – Análise e Predição da Vacinação na Cidade do Recife
 
-## Descrição
+O **RecifeVax** é um projeto de análise e modelagem de dados que explora informações reais de vacinação aplicadas na cidade do Recife.  
+O objetivo é gerar **insights visuais, previsões automáticas e agrupamentos inteligentes**, transformando dados brutos em conhecimento acessível e interativo.
 
-O **RecifeVax Dashboard** é um projeto de visualização de dados sobre a vacinação contra a COVID-19 na cidade de Recife. O objetivo deste projeto é fornecer insights sobre o progresso da vacinação, incluindo a distribuição de vacinas por tipo, sexo, grupo prioritário, local de vacinação, e outros aspectos importantes.
+---
 
-O dashboard é interativo e foi desenvolvido utilizando **Streamlit** para a interface e **Plotly** para os gráficos. O conjunto de dados utilizado neste projeto é referente à relação de pessoas vacinadas em Recife.
+## 🚀 Proposta
 
-## Funcionalidades
+A ideia central é simples: entender **como a vacinação evolui ao longo do tempo** e identificar **padrões que podem apoiar decisões estratégicas**.  
+O sistema utiliza:
+- **Python e Pandas** para limpeza e processamento dos dados;
+- **Plotly e Streamlit** para dashboards interativos;
+- **Scikit-Learn** para previsão de doses aplicadas (Regressão Linear);
+- **TF-IDF + KMeans (PLN)** para agrupamento semântico dos tipos de vacinas.
 
-- **Vacinação Mensal**: Exibe o total de vacinados por mês com uma previsão de vacinas para os próximos 3 meses.
-- **Distribuição por Tipo de Vacina**: Mostra a distribuição de vacinas aplicadas (ex.: AstraZeneca, Pfizer, Coronavac, etc.).
-- **Distribuição por Sexo**: Exibe a proporção de vacinados por sexo (masculino/feminino).
-- **Top 10 Grupos Prioritários**: Exibe os 10 grupos prioritários mais vacinados.
-- **Top 10 Locais de Vacinação**: Exibe os 10 locais mais frequentados para vacinação.
-- **Predição de Vacinação por Grupo Prioritário (Gráfico Lollipop)**: Visualiza a previsão de vacinação futura por grupo prioritário.
-- **Predição de Vacinação por Local de Vacinação (Mapa de Calor)**: Exibe as predições para os próximos 3 meses para cada local de vacinação.
+O resultado é uma aplicação web capaz de:
+- Exibir o histórico mensal de vacinação;
+- Comparar vacinas mais aplicadas;
+- Gerar previsões automáticas de tendência;
+- Agrupar vacinas por similaridade textual usando técnicas de PLN.
 
-## Pré-requisitos
+---
 
-Este projeto foi desenvolvido e testado em um ambiente com as seguintes dependências:
-
-- Python 3.x
-- Bibliotecas:
-  - pandas
-  - numpy
-  - plotly
-  - streamlit
-  - scikit-learn
-
-## Como Rodar o Projeto
+## ⚙️ Como Rodar Localmente
 
 ### 1. Clone o repositório
-
-```bash
 git clone https://github.com/Anthonyysm/RecifeVax.git
 cd RecifeVax
-```
 
 ### 2. Crie e ative um ambiente virtual
-
-Caso você não tenha o virtualenv instalado, você pode instalá-lo com:
-```bash
-pip install virtualenv
-```
-
-Crie e ative o ambiente:
-- No Windows:
-```bash
 python -m venv .venv
-.venv\Scripts\activate
-```
-- No Linux/Mac:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
+.venv\Scripts\activate  # (Windows)
 
 ### 3. Instale as dependências
-
-```bash
 pip install -r requirements.txt
-```
 
-### 4. Execute o Dashboard
-
-```bash
+### 4. Execute o dashboard
 streamlit run app.py
-```
 
-Após executar o comando, o Streamlit abrirá automaticamente o dashboard no navegador padrão, geralmente em `http://localhost:8501`.
+O aplicativo será aberto automaticamente no navegador.  
+Lá você poderá interagir com gráficos dinâmicos, previsões e análises semânticas.
 
-## Estrutura do Projeto
+---
 
-```
-RecifeVax/
-│
-├── app.py                      # Arquivo principal do Streamlit
-├── data/                       # Pasta contendo o dataset de vacinação
-│   └── vacinacao_recife.csv
-├── content/                     # Pasta onde o arquivo HTML do notebook será gerado
-│   └── previsao_vacinacao.pkl
-├── notebooks/                  # Jupyter Notebook usado para análise exploratória
-├── requirements.txt            # Lista de dependências
-└── README.md                   # Documentação do projeto
-```
+## 📊 Tecnologias Utilizadas
 
-## Melhorias Futuras
+- **Python 3.13**
+- **Pandas / NumPy**
+- **Plotly Express**
+- **Streamlit**
+- **Scikit-Learn**
+- **TF-IDF / KMeans (NLP)**
 
-- Integração com APIs de dados em tempo real (ex: OpenDataSUS)
-- Implementação de filtros personalizados por bairro e faixa etária
-- Adição de relatórios automáticos em PDF
-- Criação de alertas automáticos de tendência de vacinação
+---
+
+## 💡 Principais Insights
+
+- É possível prever a tendência mensal de doses aplicadas com base em séries históricas.
+- A distribuição de vacinas por sexo, grupo e tipo revela padrões de cobertura e campanhas específicas.
+- O uso de **PLN (Processamento de Linguagem Natural)** permite entender quais vacinas são semanticamente parecidas, ajudando a categorizar dados inconsistentes.
+- O painel é 100% interativo e pode ser facilmente adaptado para qualquer outro município.
+
+---
+
+## 🌎 Impacto e Próximos Passos
+
+O RecifeVax é um exemplo prático de como **dados públicos podem ser transformados em ferramentas de análise real**.  
+Os próximos passos incluem:
+- Adicionar previsão por grupo ou local de vacinação;
+- Treinar modelos mais robustos (RandomForest, Prophet);
+- Conectar o app a APIs reais de dados abertos.
+
+---
+
+## 🤝 Contribuição
+
+Contribuições são muito bem-vindas!  
+Sinta-se à vontade para:
+- Abrir issues;
+- Enviar pull requests;
+- Sugerir melhorias de visualização, modelo ou interface.
+
+---
+
+⭐ Se este projeto te inspirou, deixe uma estrela no repositório e compartilhe — cada apoio ajuda o RecifeVax a crescer!

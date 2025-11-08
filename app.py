@@ -1,4 +1,5 @@
-# app.py
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
 import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
@@ -289,3 +290,56 @@ fig_heatmap.update_layout(
     yaxis_title='Local de Vacinação',
 )
 st.plotly_chart(fig_heatmap, use_container_width=True)
+
+# -------------------------------
+# Análise de PLN: Agrupamento de Vacinas por Similaridade
+# -------------------------------
+
+st.subheader('🧠 Análise de Linguagem Natural (PLN) - Agrupamento de Vacinas')
+
+# Preparar os textos de vacina
+vacinas_texto = df['vacina'].dropna().astype(str)
+
+# Vetorização TF-IDF (transforma texto em números)
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(vacinas_texto)
+
+# Agrupar por similaridade semântica (3 clusters)
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['cluster_vacina'] = kmeans.fit_predict(X)
+
+# Agrupar e contar vacinas por cluster
+vacina_clusters = (
+    df.groupby('cluster_vacina')['vacina']
+    .value_counts()
+    .groupby(level=0)
+    .head(10)
+    .reset_index(name='contagem')
+)
+
+# Gráfico de barras mostrando os clusters
+fig_pln = px.bar(
+    vacina_clusters,
+    x='vacina',
+    y='contagem',
+    color='cluster_vacina',
+    title='Vacinas Agrupadas por Similaridade (PLN - TF-IDF + KMeans)',
+    labels={'vacina': 'Vacina', 'contagem': 'Quantidade'},
+    color_discrete_sequence=px.colors.qualitative.Safe,
+    height=650,
+)
+
+fig_pln.update_layout(
+    template='plotly_white',
+    xaxis_tickangle=-45,
+    xaxis_title='Vacina',
+    yaxis_title='Quantidade',
+)
+
+st.plotly_chart(fig_pln, use_container_width=True)
+
+# Insight rápido
+top_vacina = df['vacina'].value_counts().idxmax()
+st.info(
+    f'💡 Insight: a vacina mais aplicada foi **{top_vacina}**, com destaque entre os clusters detectados.'
+)

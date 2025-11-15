@@ -25,18 +25,34 @@ O resultado é uma aplicação web capaz de:
 ## ⚙️ Como Rodar Localmente
 
 ### 1. Clone o repositório
+```bash
 git clone https://github.com/Anthonyysm/RecifeVax.git
+```
+
+Acessar a pasta
+```bash
 cd RecifeVax
+```
 
 ### 2. Crie e ative um ambiente virtual
+
+```bash
 python -m venv .venv
-.venv\Scripts\activate  # (Windows)
+```
+- Executar no Ruwindows
+```bash
+.venv\Scripts\activate
+```
 
 ### 3. Instale as dependências
+```bash
 pip install -r requirements.txt
+```
 
 ### 4. Execute o dashboard
+```bash
 streamlit run app.py
+```
 
 O aplicativo será aberto automaticamente no navegador.  
 Lá você poderá interagir com gráficos dinâmicos, previsões e análises semânticas.

@@ -220,7 +220,7 @@ fig6.add_trace(
 )
 
 fig6.update_layout(
-    title='Predição de Vacinação por Grupo Prioritário (Lollipop Chart)',
+    title='Predição de Vacinação por Grupo Prioritário (Proximos 3 Meses)',
     xaxis_title='Total Previsto',
     yaxis_title='Grupo',
     template='plotly_white',

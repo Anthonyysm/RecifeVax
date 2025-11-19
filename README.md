@@ -22,7 +22,32 @@ O resultado é uma aplicação web capaz de:
 
 ---
 
-## ⚙️ Como Rodar Localmente
+## 📂 Estrutura do Projeto
+```
+RecifeVax/
+│
+├── app.py                 # Arquivo principal da aplicação
+├── data_cleaning.py       # Processamento e limpeza dos dados
+├── ml_model.py            # Modelo(s) de Machine Learning
+├── pln_model.py           # Modelo(s) de Processamento de Linguagem Natural
+├── requirements.txt       # Dependências do projeto
+├── LICENSE                # Licença
+├── README.md              # Documentação principal
+│
+├── models/                # (Gerado automaticamente) Modelos treinados
+├── content/               # Conteúdos gerados (gráficos, relatórios)
+│
+├── data/                  # Datasets usados no projeto
+│   ├── relacao-pessoas-vacinadas-covid19-recife.csv
+│   └── relacao-pessoas-limpo.csv
+│
+└── notebooks/             # Notebooks de análise
+    └── eda_vacinacao.ipynb
+```
+
+---
+
+## ⚙️ Como Executar Localmente
 
 ### 1. Clone o repositório
 ```bash
@@ -35,21 +60,39 @@ cd RecifeVax
 ```
 
 ### 2. Crie e ative um ambiente virtual
-
+#### Executar no Windows
 ```bash
 python -m venv .venv
 ```
-- Executar no Ruwindows
 ```bash
 .venv\Scripts\activate
+```
+#### Executar no Linux
+```bash
+python3 -m venv .venv
+```
+```bash
+source .venv/bin/activate
 ```
 
 ### 3. Instale as dependências
 ```bash
 pip install -r requirements.txt
 ```
-
-### 4. Execute o dashboard
+### 4. Gere o dataset limpo
+```bash
+python data_cleaning.py
+```
+### 5. Treine os modelos
+##### Machine Learning:
+```bash
+python ml_model.py
+```
+##### PLN:
+```bash
+python pln_model.py
+```
+### 6. Execute o dashboard
 ```bash
 streamlit run app.py
 ```

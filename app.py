@@ -292,92 +292,123 @@ fig_heatmap.update_layout(
 st.plotly_chart(fig_heatmap, use_container_width=True)
 
 # -------------------------------
-# Análise de PLN: Agrupamento de Vacinas por Similaridade
-# -------------------------------
-
-st.subheader('🧠 Análise de Linguagem Natural (PLN) - Agrupamento de Vacinas')
-
-# Preparar os textos de vacina
-vacinas_texto = df['vacina'].dropna().astype(str)
-
-# Vetorização TF-IDF (transforma texto em números)
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(vacinas_texto)
-
-# Agrupar por similaridade semântica (3 clusters)
-kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-df['cluster_vacina'] = kmeans.fit_predict(X)
-
-# Agrupar e contar vacinas por cluster
-vacina_clusters = (
-    df.groupby('cluster_vacina')['vacina']
-    .value_counts()
-    .groupby(level=0)
-    .head(10)
-    .reset_index(name='contagem')
-)
-
-# Gráfico de barras mostrando os clusters
-fig_pln = px.bar(
-    vacina_clusters,
-    x='vacina',
-    y='contagem',
-    color='cluster_vacina',
-    title='Vacinas Agrupadas por Similaridade (PLN - TF-IDF + KMeans)',
-    labels={'vacina': 'Vacina', 'contagem': 'Quantidade'},
-    color_discrete_sequence=px.colors.qualitative.Safe,
-    height=650,
-)
-
-fig_pln.update_layout(
-    template='plotly_white',
-    xaxis_tickangle=-45,
-    xaxis_title='Vacina',
-    yaxis_title='Quantidade',
-)
-
-st.plotly_chart(fig_pln, use_container_width=True)
-
-# Insight rápido
-top_vacina = df['vacina'].value_counts().idxmax()
-st.info(
-    f'💡 Insight: a vacina mais aplicada foi **{top_vacina}**, com destaque entre os clusters detectados.'
-)
-# -------------------------------
 # 💬 Chat interativo
 # -------------------------------
 st.header('💬 Chat com o RecifeVax')
 
-st.write(
-    'Converse com o painel! Pergunte sobre vacinas, grupos ou totais de vacinação.'
-)
+st.write('Converse com o painel! Pergunte sobre vacinas, grupos, locais ou totais de vacinação. Digite "ajuda" para sugestões de perguntas.')
 
 user_input = st.chat_input('Digite sua pergunta...')
 
 
 def responder_pergunta(pergunta, df):
-    pergunta = pergunta.lower()
+    p = pergunta.lower()
 
-    if 'vacina' in pergunta and 'mais aplicada' in pergunta:
+    # -----------------------------------------
+    # RESPOSTAS SOBRE VACINAS
+    # -----------------------------------------
+    if 'vacina' in p and ('mais aplicada' in p or 'top' in p):
         vacina_top = df['vacina'].value_counts().idxmax()
         total = df['vacina'].value_counts().max()
         return f'A vacina mais aplicada foi **{vacina_top}**, com **{total:,} doses**.'
 
-    elif 'total' in pergunta and ('dose' in pergunta or 'vacinad' in pergunta):
+    if 'vacina' in p and ('menos aplicada' in p or 'pior' in p):
+        vacina_min = df['vacina'].value_counts().idxmin()
+        total = df['vacina'].value_counts().min()
+        return f'A vacina menos aplicada foi **{vacina_min}**, com apenas **{total:,} doses**.'
+
+    # -----------------------------------------
+    # TOTAL DE DOSES
+    # -----------------------------------------
+    if ('total' in p) and ('dose' in p or 'vacinad' in p):
         total = len(df)
         return f'O total de doses aplicadas é **{total:,}**.'
 
-    elif 'sexo' in pergunta:
+    # -----------------------------------------
+    # SEXO
+    # -----------------------------------------
+    if 'sexo' in p or 'homem' in p or 'mulher' in p:
         counts = df['sexo'].value_counts()
-        return f'**{counts.index[0]}**: {counts.iloc[0]:,} doses | **{counts.index[1]}**: {counts.iloc[1]:,} doses.'
+        partes = [f'**{cat}**: {qtd:,}' for cat, qtd in counts.items()]
+        return ' | '.join(partes)
 
-    elif 'grupo' in pergunta:
-        grupo_top = df['grupo'].value_counts().idxmax()
-        total = df['grupo'].value_counts().max()
-        return f'O grupo com mais vacinados foi **{grupo_top}**, com **{total:,} pessoas**.'
+    # -----------------------------------------
+    # GRUPOS
+    # -----------------------------------------
+    if 'grupo' in p:
+        contagem = df['grupo'].value_counts()
+        grupo_top = contagem.idxmax()
+        grupo_min = contagem.idxmin()
+        total_top = contagem.max()
+        total_min = contagem.min()
 
-    else:
-        return "Desculpe, ainda não entendo essa pergunta. Tente algo como: 'qual vacina mais aplicada?' ou 'total de doses aplicadas'."
+        if 'menos' in p or 'pior' in p:
+            return f'O grupo menos vacinado é **{grupo_min}**, com **{total_min:,} pessoas**.'
+
+        return f'O grupo mais vacinado é **{grupo_top}**, com **{total_top:,} pessoas**.'
+
+    # -----------------------------------------
+    # LOCAIS
+    # -----------------------------------------
+    if 'local' in p or 'posto' in p or 'ubs' in p:
+        contagem = df['local_vacinacao'].value_counts()
+        local_top = contagem.idxmax()
+        local_min = contagem.idxmin()
+        total_top = contagem.max()
+        total_min = contagem.min()
+
+        if 'menos' in p or 'pior' in p:
+            return f'O local menos movimentado foi **{local_min}**, com **{total_min:,} doses**.'
+
+        return f'O local mais movimentado foi **{local_top}**, com **{total_top:,} doses**.'
+
+    # -----------------------------------------
+    # DATAS
+    # -----------------------------------------
+    if 'primeira' in p and 'data' in p:
+        data_min = df['data_vacinacao'].min().strftime('%d/%m/%Y')
+        return f'A primeira vacinação registrada foi em **{data_min}**.'
+
+    if 'última' in p or ('ultima' in p and 'data' in p):
+        data_max = df['data_vacinacao'].max().strftime('%d/%m/%Y')
+        return f'A última vacinação registrada foi em **{data_max}**.'
+
+    # -----------------------------------------
+    # CLUSTERS DE VACINAS (PLN)
+    # -----------------------------------------
+    if 'cluster' in p or 'similar' in p:
+        counts = df.groupby('cluster_vacina').size()
+        partes = [
+            f'Cluster **{cid}**: {qtd:,} registros'
+            for cid, qtd in counts.items()
+        ]
+        return ' | '.join(partes)
+
+    # -----------------------------------------
+    # QUER SABER O QUE PODE PERGUNTAR?
+    # -----------------------------------------
+    if 'ajuda' in p or 'perguntar' in p or 'comandos' in p:
+        return (
+            "**Você pode perguntar coisas como:**\n"
+            "- qual a vacina mais aplicada?\n"
+            "- qual o grupo menos vacinado?\n"
+            "- total de doses aplicadas\n"
+            "- distribuição por sexo\n"
+            "- qual o local mais movimentado?\n"
+            "- qual a primeira data de vacinação?\n"
+            "- clusters de vacinas\n"
+        )
+
+    # -----------------------------------------
+    # FALLBACK (mensagem padrão)
+    # -----------------------------------------
+    return (
+        "Não entendi totalmente. Tente algo como:\n"
+        "- *qual vacina mais aplicada?*\n"
+        "- *qual grupo menos vacinado?*\n"
+        "- *total de doses aplicadas*\n"
+        "- *local mais movimentado?*\n"
+    )
 
 
 if user_input:
